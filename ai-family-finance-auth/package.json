@@ -1,14 +1,20 @@
 {
   "name": "ai-family-finance-auth",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "AI Family Finance Tracker with authentication and dashboard",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "finance",
+    "family",
+    "investments",
+    "auth",
+    "dashboard"
+  ],
+  "author": "Prasanna",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
