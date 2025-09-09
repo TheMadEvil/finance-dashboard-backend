@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Family Finance Login</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fefcea, #f1da36, #f7b733);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating background bubbles */
+        .bubble {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0.7;}
+            50% { opacity: 1;}
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0.7;}
+        }
+
+        /* Login Card */
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
+            width: 350px;
+        }
+
+        .login-card h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .login-card label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 15px;
+            border: 2px solid #f1da36;
+            outline: none;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .login-card input:focus {
+            border-color: #f7b733;
+            box-shadow: 0 0 10px rgba(247,183,51,0.4);
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #f7b733;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-card button:hover {
+            background: #f1da36;
+            color: #333;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Cartoon icons */
+        .header-icons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-icons span {
+            font-size: 30px;
+            margin: 0 5px;
+            animation: bounce 2s infinite;
+            display: inline-block;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Loading spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #f7b733;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Bubbles -->
+    <div class="bubble" style="left:10%; width:60px; height:60px;"></div>
+    <div class="bubble" style="left:30%; width:40px; height:40px;"></div>
+    <div class="bubble" style="left:70%; width:80px; height:80px;"></div>
+    <div class="bubble" style="left:90%; width:50px; height:50px;"></div>
+
+    <div class="login-card">
+        <div class="header-icons">
+            <span>💰</span>
+            <span>🏠</span>
+            <span>👨‍👩‍👧‍👦</span>
+            <span>✏️</span>
+        </div>
+        <h1>AI Family Finance</h1>
+        <form id="loginForm">
+            <label>Email:</label>
+            <input type="email" id="email" required>
+
+            <label>Password:</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Login</button>
+            <div class="loader" id="loader"></div>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById("loginForm");
+        const message = document.getElementById("message");
+        const loader = document.getElementById("loader");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            loader.style.display = "block";
+            message.innerText = "";
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                loader.style.display = "none";
+
+                if (res.ok) {
+                    localStorage.setItem("token", data.token);
+                    message.innerText = "Login successful! Redirecting...";
+                    // Redirect to dashboard after login
+                    setTimeout(() => { window.location.href = "/dashboard.html"; }, 1500);
+                } else {
+                    message.innerText = data.msg || "Login failed";
+                }
+            } catch (err) {
+                loader.style.display = "none";
+                message.innerText = "Error connecting to server";
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>
